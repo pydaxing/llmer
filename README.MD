@@ -1,5 +1,5 @@
 # LLMER: 一个化繁为简的大模型（LLM）应用开发者神器
-
+![](https://pydaxing-public.oss-cn-hangzhou.aliyuncs.com/20241119_llmer/llmer.jpg)
 `llmer` 是一个轻量级的 Python 库，旨在简化大型语言模型（LLMs）应用中的复杂过程。它提供了用于并行处理、运行时管理、文件处理和Prompt格式化等常用的高级 API 和实用工具，从而不用每次都需要重复开发相关代码，简化工作。
 
 ## 功能特点
@@ -8,6 +8,7 @@
 - **运行时管理**: 提供timeout装饰器用于超时控制，并发安全锁装饰器保证并发过程中对数据修改的正确性。
 - **文件工具**:  提供对 YAML读取、文件转List（尤其适用jsonl）、List存文件、 图像转 Base64 编码的工具。
 - **提示管理**: 将 message 转成 ChatML 格式。
+- **字符串解析**：从模型的输出中解析出```json {}```。
 - **更多功能**: 敬请期待...
 
 ## 安装
@@ -407,8 +408,8 @@ print(encoded_image_with_prefix)
 
 #### 参数:
 - `messages` (List[Dict[str, str]]): 消息列表，其中每条消息是一个包含以下键的字典：
-    - `role` (str): 说话者的角色，例如 `"system"`、`"user"` 或 `"assistant"`。
-    - `content` (str): 消息的内容。
+  - `role` (str): 说话者的角色，例如 `"system"`、`"user"` 或 `"assistant"`。
+  - `content` (str): 消息的内容。
 
 
 **使用举例**:
@@ -437,6 +438,45 @@ Can you tell me the weather today?<|im_end|>
 <|im_start|>assistant
 The weather is sunny with a chance of rain.<|im_end|>
 <|im_start|>assistant
+```
+
+## 6. Parse工具
+
+### 6.1 json字符串加载
+
+`parse_json()` 函数将json字符串加载成json对象，尤其是LLM输出的\`\`\`json{}\`\`\`这种风格的字符串。
+
+**使用举例**:
+
+```python
+from llmer.parser import parse_json
+json_str = """
+some other words...
+```json
+{
+    "name": "Alice",
+    "details": {"key": "value"}
+}```
+some other words...
+"""
+
+json_data = parse_json(json_str)
+print(json_data)
+
+json_str = """
+{
+"name": "Alice",
+"details": {"key": "value"}
+}
+"""
+
+json_data = parse_json(json_str)
+print(json_data)
+```
+
+```text
+{'name': 'Alice', 'details': {'key': 'value'}}
+{'name': 'Alice', 'details': {'key': 'value'}}
 ```
 
 
