@@ -8,6 +8,7 @@
 - **运行时管理**: 提供timeout装饰器用于超时控制，并发安全锁装饰器保证并发过程中对数据修改的正确性。
 - **文件工具**:  提供对 YAML读取、文件转List（尤其适用jsonl）、List存文件、 图像转 Base64 编码的工具。
 - **提示管理**: 将 message 转成 ChatML 格式。
+- **字符串解析**：从模型的输出中解析出```json {}```。
 - **更多功能**: 敬请期待...
 
 ## 安装
@@ -437,6 +438,45 @@ Can you tell me the weather today?<|im_end|>
 <|im_start|>assistant
 The weather is sunny with a chance of rain.<|im_end|>
 <|im_start|>assistant
+```
+
+## 6. Parse工具
+
+### 6.1 json字符串加载
+
+`parse_json()` 函数将json字符串加载成json对象，尤其是LLM输出的\`\`\`json{}\`\`\`这种风格的字符串。
+
+**使用举例**:
+
+```python
+from llmer.parser import parse_json
+json_str = """
+some other words...
+```json
+{
+    "name": "Alice",
+    "details": {"key": "value"}
+}```
+some other words...
+"""
+
+json_data = parse_json(json_str)
+print(json_data)
+
+json_str = """
+{
+"name": "Alice",
+"details": {"key": "value"}
+}
+"""
+
+json_data = parse_json(json_str)
+print(json_data)
+```
+
+```text
+{'name': 'Alice', 'details': {'key': 'value'}}
+{'name': 'Alice', 'details': {'key': 'value'}}
 ```
 
 

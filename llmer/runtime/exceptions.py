@@ -77,3 +77,16 @@ class ExecutionTimeoutError(Exception):
     def __str__(self):
         return self.error_msg
 
+
+class ParseJSONError(Exception):
+    """自定义异常，指示函数执行超时"""
+    error_code = 95107
+    error_msg = 'Parse JSON Failed!'
+
+    def __init__(self, message=None, *args):
+        super().__init__(message, *args)
+        if message:
+            self.error_msg += f' {message}'
+
+    def __str__(self):
+        return self.error_msg
