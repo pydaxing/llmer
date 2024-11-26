@@ -1,5 +1,5 @@
 # LLMER: 一个化繁为简的大模型（LLM）应用开发者神器
-
+![](https://pydaxing-public.oss-cn-hangzhou.aliyuncs.com/20241119_llmer/llmer.jpg)
 `llmer` 是一个轻量级的 Python 库，旨在简化大型语言模型（LLMs）应用中的复杂过程。它提供了用于并行处理、运行时管理、文件处理和Prompt格式化等常用的高级 API 和实用工具，从而不用每次都需要重复开发相关代码，简化工作。
 
 ## 功能特点
