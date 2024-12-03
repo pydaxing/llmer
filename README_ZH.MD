@@ -9,6 +9,7 @@
 - **文件工具**:  提供对 YAML读取、文件转List（尤其适用jsonl）、List存文件、 图像转 Base64 编码的工具。
 - **提示管理**: 将 message 转成 ChatML 格式。
 - **字符串解析**：从模型的输出中解析出```json {}```。
+- **FastAPI服务部署**：将任意函数，通过@deploy()装饰器即可快速便捷部署成FastApi服务。
 - **更多功能**: 敬请期待...
 
 ## 安装
@@ -54,6 +55,12 @@ LLMER主要包括以下功能，更多通用功能正在开发中，敬请期待
 
 ### 5. 提示词管理
 - 将openai格式的message转成ChatML格式。
+
+### 6. Parse工具
+- 将LLM输出的json字符串解析成json对象，包括```json {}``这种格式的。
+
+### 7. FastApi服务部署
+- 将任意函数，通过@deploy()装饰器即可快速便捷部署成FastApi服务。
 
 ## API 文档
 
@@ -349,7 +356,6 @@ list_to_file(data, "output.jsonl")
 ```
 
 
-
 ### 4.3 YAML 读取
 
 `yaml_reader()` 函数读取一个 YAML 配置文件，并将其内容作为 Python 字典返回。该函数假定 YAML 文件结构正确，并返回解析后的数据。
@@ -477,6 +483,76 @@ print(json_data)
 ```text
 {'name': 'Alice', 'details': {'key': 'value'}}
 {'name': 'Alice', 'details': {'key': 'value'}}
+```
+
+## 7. FastAPI服务部署
+
+### 7.1 
+
+`@deploy()` 装饰器能快速便捷将任意函数部署成FastAPI服务。
+
+
+**使用举例**:
+如下打开任何一个xxx.serve()，即可立即部署成FastAPI接口
+```python
+from llmer.server import deploy
+import time
+import asyncio
+
+# 普通服务
+@deploy(host="127.0.0.1", port=9510)
+def add(a: int, b: int):
+    return a + b
+# add.serve()
+
+# 异步服务
+@deploy(host="127.0.0.1", port=9510)
+async def async_add(a: int, b: int):
+    return a + b
+# async_add.serve()
+
+# 流式服务
+@deploy(host="127.0.0.1", port=9511)
+def stream_numbers(start: int, end: int):
+    for i in range(start, end + 1):
+        time.sleep(1)
+        yield f'{{"number": {i}}}'
+# stream_numbers.serve()
+
+# 异步流式服务
+@deploy(host="127.0.0.1", port=9511)
+async def async_stream_numbers(start: int, end: int):
+    for i in range(start, end + 1):
+        await asyncio.sleep(1)
+        yield {"number": i}
+# async_stream_numbers.serve()
+```
+
+以最后一个异步流式服务为例，启动后
+
+```shell
+INFO:     Started server process [26081]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:9511 (Press CTRL+C to quit)
+```
+
+调用举例
+
+```shell
+curl -X POST "http://127.0.0.1:9511/async_stream_numbers" \
+    -H "Content-Type: application/json" \
+    -d '{"start": 1, "end": 5}'
+```
+
+流式输出
+
+```text
+data: {'number': 1}
+data: {'number': 2}
+data: {'number': 3}
+data: {'number': 4}
+data: {'number': 5}
 ```
 
 
