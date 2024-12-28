@@ -2,6 +2,8 @@
 ![](https://pydaxing-public.oss-cn-hangzhou.aliyuncs.com/20241119_llmer/llmer.jpg)
 `llmer` 是一个轻量级的 Python 库，旨在简化大型语言模型（LLMs）应用中的复杂过程。它提供了用于并行处理、运行时管理、文件处理和Prompt格式化等常用的高级 API 和实用工具，从而不用每次都需要重复开发相关代码，简化工作。
 
+[**Blog**](https://lengm.cn/post/20241119_llmer/)
+
 ## 功能特点
 - **模型调用**: 支持OpenAI风格和Azure模型调用。
 - **并行处理**: 支持线程池并发、多线程并发、异步函数异步并发、非异步函数异步并发。
